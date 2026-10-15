@@ -2,775 +2,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101827">
-  <meta name="description" content="Calculate daily net profit, monthly income, expenses and break-even revenue in Indian rupees.">
-  <title>Daily Profit Calculator</title>
-
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #101827;
-      --surface: #182337;
-      --surface-2: #202e44;
-      --border: #304159;
-      --text: #f4f7fb;
-      --muted: #a8b5c8;
-      --green: #52e0a0;
-      --blue: #8bb9ff;
-      --red: #ff8c98;
-      --radius: 18px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background:
-        radial-gradient(ellipse at top right, #1b3651 0%, transparent 42%),
-        var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-
-    button, input {
-      font: inherit;
-    }
-
-    button, input, .card {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .container {
-      width: min(100% - 32px, 900px);
-      margin: 0 auto;
-      padding: 28px 0 36px;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      margin-bottom: 28px;
-    }
-
-    .brand-icon {
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-      width: 48px;
-      height: 48px;
-      border-radius: 15px;
-      background: #203d3c;
-      color: var(--green);
-      font-size: 25px;
-      font-weight: 800;
-    }
-
-    h1, h2, p {
-      margin-top: 0;
-    }
-
-    h1 {
-      margin-bottom: 2px;
-      font-size: clamp(21px, 5vw, 29px);
-      line-height: 1.25;
-      letter-spacing: -0.7px;
-    }
-
-    .subtitle {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .hero {
-      padding: 23px;
-      margin-bottom: 20px;
-      border: 1px solid #2e4e54;
-      border-radius: 22px;
-      background: linear-gradient(135deg, #1b393b, #19283c 75%);
-    }
-
-    .eyebrow {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1.1px;
-      text-transform: uppercase;
-    }
-
-    .hero-number {
-      margin: 9px 0 4px;
-      font-size: clamp(34px, 9vw, 49px);
-      font-weight: 800;
-      letter-spacing: -1.8px;
-      line-height: 1.2;
-      overflow-wrap: anywhere;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .positive {
-      color: var(--green);
-    }
-
-    .negative {
-      color: var(--red);
-    }
-
-    .hero-note {
-      margin: 0;
-      color: #c2d0df;
-      font-size: 13px;
-    }
-
-    .section-title {
-      margin: 26px 0 13px;
-      font-size: 18px;
-      letter-spacing: -0.25px;
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .card {
-      min-width: 0;
-      padding: 17px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: rgba(24, 35, 55, 0.94);
-    }
-
-    .metric-label {
-      margin-bottom: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .metric-value {
-      margin: 0;
-      font-size: clamp(19px, 5vw, 25px);
-      line-height: 1.3;
-      letter-spacing: -0.6px;
-      overflow-wrap: anywhere;
-      font-weight: 750;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .metric-hint {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .panel {
-      padding: 20px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      background: var(--surface);
-    }
-
-    .panel-description {
-      margin: -5px 0 20px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 19px 15px;
-    }
-
-    .field {
-      min-width: 0;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 7px;
-      font-size: 13px;
-      font-weight: 650;
-    }
-
-    .field-hint {
-      display: block;
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .input-wrap {
-      display: flex;
-      align-items: center;
-      min-height: 49px;
-      border: 1px solid #3b4c65;
-      border-radius: 12px;
-      background: #111c2c;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-
-    .input-wrap:focus-within {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px #8bb9ff25;
-    }
-
-    .input-prefix {
-      padding-left: 13px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .input-wrap input {
-      width: 100%;
-      min-width: 0;
-      padding: 12px;
-      border: 0;
-      outline: 0;
-      background: transparent;
-      color: var(--text);
-      font-size: 16px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .input-wrap input:focus-visible {
-      outline: none;
-    }
-
-    .input-wrap:has(input[aria-invalid="true"]) {
-      border-color: var(--red);
-    }
-
-    input::placeholder {
-      color: #74839a;
-    }
-
-    .error {
-      min-height: 0;
-      margin-top: 5px;
-      color: var(--red);
-      font-size: 12px;
-    }
-
-    .error:empty {
-      display: none;
-    }
-
-    .target-panel {
-      margin-top: 20px;
-      border-color: #355b54;
-    }
-
-    .target-result {
-      margin-top: 17px;
-      padding: 16px;
-      border-radius: 13px;
-      background: #112d2c;
-    }
-
-    .target-result .metric-value {
-      margin-top: 5px;
-      font-size: clamp(23px, 6vw, 30px);
-    }
-
-    .progress-track {
-      height: 8px;
-      margin-top: 14px;
-      overflow: hidden;
-      border-radius: 99px;
-      background: #314447;
-    }
-
-    .progress-fill {
-      width: 0%;
-      height: 100%;
-      border-radius: inherit;
-      background: var(--green);
-      transition: width 0.2s ease;
-    }
-
-    .progress-label {
-      margin: 8px 0 0;
-      color: #c3d5d0;
-      font-size: 12px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .btn {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 49px;
-      padding: 12px 18px;
-      border: 1px solid transparent;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 750;
-      transition: transform 0.12s, background 0.12s;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn:focus-visible {
-      outline: 3px solid var(--blue);
-      outline-offset: 3px;
-    }
-
-    .btn-primary {
-      flex: 1;
-      background: var(--green);
-      color: #10251d;
-    }
-
-    .btn-primary:hover {
-      background: #73edb4;
-    }
-
-    .btn-secondary {
-      border-color: var(--border);
-      background: var(--surface-2);
-      color: var(--text);
-    }
-
-    .btn-secondary:hover {
-      background: #2b3b53;
-    }
-
-    .breakdown {
-      display: grid;
-      gap: 0;
-    }
-
-    .breakdown-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 13px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-
-    .breakdown-row:last-child {
-      border-bottom: 0;
-    }
-
-    .breakdown-row span:first-child {
-      color: var(--muted);
-    }
-
-    .breakdown-row strong {
-      text-align: right;
-      overflow-wrap: anywhere;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .disclaimer {
-      margin: 22px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.7;
-    }
-
-    .footer {
-      margin-top: 20px;
-      text-align: center;
-      color: #8090a7;
-      font-size: 12px;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    @media (min-width: 650px) {
-      .container {
-        padding-top: 38px;
-      }
-
-      .metrics {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      .hero {
-        padding: 30px;
-      }
-
-      .panel {
-        padding: 26px;
-      }
-    }
-
-    @media (max-width: 380px) {
-      .container {
-        width: calc(100% - 22px);
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-      }
-
-      .hero {
-        padding: 19px;
-      }
-
-      .card {
-        padding: 13px;
-      }
-
-      .actions {
-        flex-direction: column;
-      }
-
-      .btn {
-        width: 100%;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        transition: none !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Daily Profit Calculator</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;background:#101827;color:#f4f7fb;font-family:Arial,sans-serif}
+main{max-width:650px;margin:auto}
+h1{font-size:26px}
+p,.hint{color:#b5c1d2}
+.card{background:#1b273a;border:1px solid #34445b;border-radius:16px;padding:18px;margin:15px 0}
+.profit{font-size:38px;font-weight:bold;color:#55e0a0;overflow-wrap:anywhere}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+label{display:block;font-size:14px;margin-bottom:7px}
+input{width:100%;padding:13px;border-radius:9px;border:1px solid #52627a;background:#101827;color:white;font-size:16px}
+.result{padding:13px 0;border-bottom:1px solid #34445b}
+.result:last-child{border:0}
+.result span{color:#b5c1d2}
+.result strong{float:right;text-align:right;max-width:58%;overflow-wrap:anywhere}
+button{padding:14px;border:0;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer}
+.buttons{display:flex;gap:10px;margin-top:16px}
+#reset{background:#34445b;color:white}
+#calculate{background:#55e0a0;color:#10251d;flex:1}
+.error{color:#ff9ca5;font-size:13px;margin-top:8px}
+@media(max-width:380px){.grid{grid-template-columns:1fr}.profit{font-size:32px}}
+</style>
 </head>
-
 <body>
-  <main class="container">
-    <header class="topbar">
-      <div class="brand-icon" aria-hidden="true">₹</div>
-      <div>
-        <h1>Daily Profit Calculator</h1>
-        <p class="subtitle">Know your numbers. Plan your earnings.</p>
-      </div>
-    </header>
+<main>
+<h1>₹ Daily Profit Calculator</h1>
+<p>Apni daily earning aur expenses calculate karo.</p>
 
-    <section class="hero" aria-labelledby="daily-heading">
-      <div class="eyebrow" id="daily-heading">Estimated daily net profit</div>
-      <p class="hero-number positive" id="dailyProfit" aria-live="polite">₹450</p>
-      <p class="hero-note" id="dailyProfitNote">
-        After daily expenses and allocated monthly EMI or rental costs.
-      </p>
-    </section>
+<section class="card">
+<div>DAILY NET PROFIT</div>
+<div class="profit" id="dailyProfit">₹575</div>
+<p id="status">All expenses deducted.</p>
+</section>
 
-    <section aria-labelledby="monthly-heading">
-      <h2 class="section-title" id="monthly-heading">Monthly overview</h2>
+<section class="card">
+<h2>Your daily expenses</h2>
+<form id="calculator" novalidate>
+<div class="grid">
+<div>
+<label for="revenue">Daily revenue (₹)</label>
+<input id="revenue" type="number" min="0" step="any" value="1000">
+</div>
+<div>
+<label for="fuel">Daily fuel (₹)</label>
+<input id="fuel" type="number" min="0" step="any" value="150">
+</div>
+<div>
+<label for="food">Daily food (₹)</label>
+<input id="food" type="number" min="0" step="any" value="100">
+</div>
+<div>
+<label for="maintenance">Daily maintenance (₹)</label>
+<input id="maintenance" type="number" min="0" step="any" value="50">
+</div>
+<div>
+<label for="emi">Monthly EMI / rent (₹)</label>
+<input id="emi" type="number" min="0" step="any" value="3000">
+</div>
+<div>
+<label for="days">Working days per month</label>
+<input id="days" type="number" min="1" max="31" step="1" value="24">
+</div>
+<div>
+<label for="target">Monthly profit target (₹)</label>
+<input id="target" type="number" min="0" step="any" value="30000">
+</div>
+</div>
 
-      <div class="metrics">
-        <article class="card">
-          <p class="metric-label">Monthly revenue</p>
-          <p class="metric-value" id="monthlyRevenue">₹24,000</p>
-          <p class="metric-hint">Before expenses</p>
-        </article>
+<div id="error" class="error" role="alert"></div>
+<div class="buttons">
+<button type="button" id="calculate">Calculate</button>
+<button type="reset" id="reset">Reset</button>
+</div>
+</form>
+</section>
 
-        <article class="card">
-          <p class="metric-label">Monthly expenses</p>
-          <p class="metric-value" id="monthlyExpenses">₹10,500</p>
-          <p class="metric-hint">Operating costs + EMI/rent</p>
-        </article>
+<section class="card">
+<h2>Monthly overview</h2>
+<div class="result"><span>Monthly revenue</span><strong id="monthlyRevenue">₹24,000</strong></div>
+<div class="result"><span>Monthly expenses</span><strong id="monthlyExpenses">₹10,200</strong></div>
+<div class="result"><span>Monthly net profit</span><strong id="monthlyProfit">₹13,800</strong></div>
+<div class="result"><span>Break-even daily revenue</span><strong id="breakEven">₹425</strong></div>
+<div class="result"><span>Daily operating expenses</span><strong id="operating">₹300</strong></div>
+<div class="result"><span>Monthly target remaining</span><strong id="remaining">₹16,200</strong></div>
+<div class="result"><span>Target progress</span><strong id="progress">46%</strong></div>
+</section>
 
-        <article class="card">
-          <p class="metric-label">Monthly net profit</p>
-          <p class="metric-value positive" id="monthlyProfit">₹13,500</p>
-          <p class="metric-hint">Estimated take-home surplus</p>
-        </article>
+<p class="hint">Note: Results are estimates. Actual income and expenses may vary.</p>
+</main>
 
-        <article class="card">
-          <p class="metric-label">Break-even daily revenue</p>
-          <p class="metric-value" id="breakEven">₹450</p>
-          <p class="metric-hint">Revenue needed to cover costs</p>
-        </article>
+<script>
+(function () {
+  const ids = [
+    "revenue", "fuel", "food", "maintenance",
+    "emi", "days", "target"
+  ];
 
-        <article class="card">
-          <p class="metric-label">Daily operating expenses</p>
-          <p class="metric-value" id="dailyExpenses">₹300</p>
-          <p class="metric-hint">Fuel, food and maintenance</p>
-        </article>
+  const defaults = {
+    revenue: 1000,
+    fuel: 150,
+    food: 100,
+    maintenance: 50,
+    emi: 3000,
+    days: 24,
+    target: 30000
+  };
 
-        <article class="card">
-          <p class="metric-label">Monthly working days</p>
-          <p class="metric-value" id="workingDaysSummary">24 days</p>
-          <p class="metric-hint">Your planned work schedule</p>
-        </article>
-      </div>
-    </section>
+  const $ = id => document.getElementById(id);
 
-    <section aria-labelledby="inputs-heading">
-      <h2 class="section-title" id="inputs-heading">Your daily numbers</h2>
+  function money(value) {
+    return "₹" + Number(value).toLocaleString("en-IN", {
+      maximumFractionDigits: 2
+    });
+  }
 
-      <div class="panel">
-        <p class="panel-description">
-          Change any amount to update your profit estimates instantly.
-        </p>
+  function calculate() {
+    const v = {};
+    let error = "";
 
-        <form id="profitForm" novalidate>
-          <div class="form-grid">
-            <div class="field">
-              <label for="revenue">Daily revenue</label>
-              <div class="input-wrap">
-                <span class="input-prefix" aria-hidden="true">₹</span>
-                <input id="revenue" name="revenue" type="number"
-                  min="0" max="1000000000" step="0.01"
-                  value="1000" inputmode="decimal" required
-                  aria-describedby="revenue-error">
-              </div>
-              <div class="error" id="revenue-error"></div>
-            </div>
+    for (const id of ids) {
+      const input = $(id);
+      const raw = input.value.trim();
+      const number = Number(raw);
 
-            <div class="field">
-              <label for="fuel">Daily fuel expense</label>
-              <div class="input-wrap">
-                <span class="input-prefix" aria-hidden="true">₹</span>
-                <input id="fuel" name="fuel" type="number"
-                  min="0" max="1000000000" step="0.01"
-                  value="150" inputmode="decimal" required
-                  aria-describedby="fuel-error">
-              </div>
-              <div class="error" id="fuel-error"></div>
-            </div>
-
-            <div class="field">
-              <label for="food">Daily food expense</label>
-              <div class="input-wrap">
-                <span class="input-prefix" aria-hidden="true">₹</span>
-                <input id="food" name="food" type="number"
-                  min="0" max="1000000000" step="0.01"
-                  value="100" inputmode="decimal" required
-                  aria-describedby="food-error">
-              </div>
-              <div class="error" id="food-error"></div>
-            </div>
-
-            <div class="field">
-              <label for="maintenance">Daily maintenance</label>
-              <div class="input-wrap">
-                <span class="input-prefix" aria-hidden="true">₹</span>
-                <input id="maintenance" name="maintenance" type="number"
-                  min="0" max="1000000000" step="0.01"
-                  value="50" inputmode="decimal" required
-                  aria-describedby="maintenance-error">
-              </div>
-              <div class="error" id="maintenance-error"></div>
-            </div>
-
-            <div class="field">
-              <label for="emi">Monthly EMI / rental expense</label>
-              <div class="input-wrap">
-                <span class="input-prefix" aria-hidden="true">₹</span>
-                <input id="emi" name="emi" type="number"
-                  min="0" max="1000000000" step="0.01"
-                  value="3000" inputmode="decimal" required
-                  aria-describedby="emi-error">
-              </div>
-              <small class="field-hint">Enter the full monthly amount.</small>
-              <div class="error" id="emi-error"></div>
-            </div>
-
-            <div class="field">
-              <label for="days">Working days per month</label>
-              <div class="input-wrap">
-                <input id="days" name="days" type="number"
-                  min="1" max="31" step="1"
-                  value="24" inputmode="numeric" required
-                  aria-describedby="days-error">
-              </div>
-              <div class="error" id="days-error"></div>
-            </div>
-          </div>
-
-          <div class="actions">
-            <button class="btn btn-primary" type="button" id="calculateBtn">
-              Calculate profit
-            </button>
-            <button class="btn btn-secondary" type="reset" id="resetBtn">
-              Reset
-            </button>
-          </div>
-
-          <p class="sr-only" id="validationSummary" role="status"
-             aria-live="polite"></p>
-        </form>
-      </div>
-    </section>
-
-    <section class="panel target-panel" aria-labelledby="target-heading">
-      <h2 class="section-title" id="target-heading"
-          style="margin-top: 0">Monthly income target</h2>
-      <p class="panel-description">
-        Set your profit goal and see how much more you need to earn.
-      </p>
-
-      <div class="field">
-        <label for="target">Your monthly profit target</label>
-        <div class="input-wrap">
-          <span class="input-prefix" aria-hidden="true">₹</span>
-          <input id="target" name="target" type="number"
-            min="0" max="1000000000" step="0.01"
-            value="30000" inputmode="decimal" required
-            aria-describedby="target-error">
-        </div>
-        <div class="error" id="target-error"></div>
-      </div>
-
-      <div class="target-result">
-        <div class="eyebrow" id="targetResultLabel">Amount still needed</div>
-        <p class="metric-value" id="targetRemaining" aria-live="polite">₹16,500</p>
-        <p class="progress-label" id="targetProgressText">
-          45% of your target covered
-        </p>
-        <div class="progress-track" id="targetProgressTrack"
-             role="progressbar" aria-label="Monthly profit target progress"
-             aria-valuemin="0" aria-valuemax="100" aria-valuenow="45">
-          <div class="progress-fill" id="targetProgress"></div>
-        </div>
-      </div>
-    </section>
-
-    <section aria-labelledby="breakdown-heading">
-      <h2 class="section-title" id="breakdown-heading">Profit breakdown</h2>
-      <div class="panel breakdown">
-        <div class="breakdown-row">
-          <span>Daily revenue</span>
-          <strong id="breakdownRevenue">₹1,000</strong>
-        </div>
-        <div class="breakdown-row">
-          <span>Daily operating costs</span>
-          <strong id="breakdownOperating">₹300</strong>
-        </div>
-        <div class="breakdown-row">
-          <span>Daily share of EMI / rent</span>
-          <strong id="breakdownFixed">₹125</strong>
-        </div>
-        <div class="breakdown-row">
-          <span>Estimated daily net profit</span>
-          <strong id="breakdownDailyProfit" class="positive">₹575</strong>
-        </div>
-        <div class="breakdown-row">
-          <span>Estimated monthly net profit</span>
-          <strong id="breakdownMonthlyProfit" class="positive">₹13,800</strong>
-        </div>
-      </div>
-    </section>
-
-    <p class="disclaimer">
-      <strong>Disclaimer:</strong> These results are estimates based on the
-      amounts you enter. Actual earnings may vary due to demand, incentives,
-      taxes, repairs, downtime and other costs. Enter all relevant expenses
-      for a more realistic estimate. This calculator does not guarantee income.
-    </p>
-
-    <footer class="footer">
-      Daily Profit Calculator · Simple tools for smarter money decisions
-    </footer>
-  </main>
-
-  <script>
-    (() => {
-      "use strict";
-
-      const defaults = {
-        revenue: 1000,
-        fuel: 150,
-        food: 100,
-        maintenance: 50,
-        emi: 3000,
-        days: 24,
-        target: 30000
-      };
-
-      const fieldIds = [
-        "revenue", "fuel", "food", "maintenance", "emi", "days", "target"
-      ];
-
-      const form = document.getElementById("profitForm");
-      const validationSummary = document.getElementById("validationSummary");
-
-      const moneyFormatter = new Intl.NumberFormat("en-IN", {
-        style: "currency",
-        currency: "INR",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2
-      });
-
-      const formatMoney = value =>
-        moneyFormatter.format(Object.is(value, -0) ? 0 : value);
-
-      const formatNumber = value =>
-        new Intl.NumberFormat("en-IN", {
-          maximumFractionDigits: 2
-        }).format(value);
-
-      function getFieldValue(id) {
-        const element = document.getElementById(id);
-        const raw = element.value.trim();
-
-        if (raw === "") {
-          return { valid: false, value: 0, message: "This field is required." };
-        }
-
-        const value = Number(raw);
-
-        if (!Number.isFinite(value)) {
-          return { valid: false, value: 0, message: "Enter a valid number." };
-        }
-
-        if (value < 0) {
-          return { valid: false, value, message: "Amount cannot be negative." };
-        }
-
-        if (value > Number(element.max)) {
-          return {
-            valid: false,
-            value,
-            message: "Amount exceeds the allowed limit."
-          };
-        }
-
-        if (id === "days" && (!Number.isInteger(value) || value < 1 || value > 31)) {
-          return {
-            valid: false,
-            value,
-            message: "Enter a whole number from 1 to 31."
-          };
-        }
-
-        return { valid: true, value, message: "" };
+      if (raw === "" || !Number.isFinite(number)) {
+        error = "Please fill every field with a valid number.";
+        break;
       }
 
-      function showFieldError(id, message) {
-        const field = document.getElementById(id);
-        const error = document.getElementById(id + "-error");
+      if (number < 0 || number > 1000000000) {
+        error = "Values must be between 0 and 1,000,000,000.";
+        break;
+      }
 
-        field.set
+      if (id === "days" &&
+          (!Number.isInteger(number) || number < 1 || number > 31)) {
+        error = "Working days must be a whole number from 1 to 31.";
+        break;
+      }
+
+      v[id] = number;
+    }
+
+    $("error").textContent = error;
+
+    if (error) {
+      $("status").textContent = "Please correct your inputs.";
+      return;
+    }
+
+    const operating = v.fuel + v.food + v.maintenance;
+    const monthlyRevenue = v.revenue * v.days;
+    const monthlyExpenses = operating * v.days + v.emi;
+    const monthlyProfit = monthlyRevenue - monthlyExpenses;
+    const dailyProfit = monthlyProfit / v.days;
+    const breakEven = operating + v.emi / v.days;
+    const remaining = Math.max(0, v.target - monthlyProfit);
+    const progress = v.target === 0
+      ? 100
+      : Math.max(0, Math.min(100, monthlyProfit / v.target * 100));
+
+    $("dailyProfit").textContent = money(dailyProfit);
+    $("dailyProfit").style.color = dailyProfit >= 0 ? "#55e0a0" : "#ff8c98";
+    $("monthlyRevenue").textContent = money(monthlyRevenue);
+    $("monthlyExpenses").textContent = money(monthlyExpenses);
+    $("monthlyProfit").textContent = money(monthlyProfit);
+    $("monthlyProfit").style.color = monthlyProfit >= 0 ? "#55e0a0" : "#ff8c98";
+    $("breakEven").textContent = money(breakEven);
+    $("operating").textContent = money(operating);
+    $("remaining").textContent = money(remaining);
+    $("progress").textContent = progress.toFixed(1) + "%";
+
+    $("status").textContent = monthlyProfit >= v.target
+      ? "Monthly profit target reached!"
+      : "After daily costs and monthly EMI/rent allocation.";
+
+    console.log("Calculator updated", {
+      dailyProfit, monthlyRevenue, monthlyExpenses, monthlyProfit, breakEven
+    });
+  }
+
+  // Every change recalculates immediately.
+  ids.forEach(id => {
+    $(id).addEventListener("input", calculate);
+    $(id).addEventListener("change", calculate);
+  });
+
+  $("calculate").addEventListener("click", calculate);
+
+  $("calculator").addEventListener("reset", function () {
+    setTimeout(calculate, 0);
+  });
+
+  calculate();
+})();
+</script>
+</body>
+</html>

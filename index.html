@@ -1,255 +1,420 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<link rel="manifest" href="./manifest.json">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101827">
-<title>Daily Profit Calculator</title>
-<style>
-*{box-sizing:border-box}
-  <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js");
-  });
-}
-</script>
-body{margin:0;padding:20px;background:#101827;color:#f4f7fb;font-family:Arial,sans-serif}
-main{max-width:650px;margin:auto}
-h1{font-size:26px}
-p,.hint{color:#b5c1d2}
-.card{background:#1b273a;border:1px solid #34445b;border-radius:16px;padding:18px;margin:15px 0}
-.profit{font-size:38px;font-weight:bold;color:#55e0a0;overflow-wrap:anywhere}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-label{display:block;font-size:14px;margin-bottom:7px}
-input{width:100%;padding:13px;border-radius:9px;border:1px solid #52627a;background:#101827;color:white;font-size:16px}
-.result{padding:13px 0;border-bottom:1px solid #34445b}
-.result:last-child{border:0}
-.result span{color:#b5c1d2}
-.result strong{float:right;text-align:right;max-width:58%;overflow-wrap:anywhere}
-button{padding:14px;border:0;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer}
-.buttons{display:flex;gap:10px;margin-top:16px}
-#reset{background:#34445b;color:white}
-#calculate{background:#55e0a0;color:#10251d;flex:1}
-.error{color:#ff9ca5;font-size:13px;margin-top:8px}
-@media(max-width:380px){.grid{grid-template-columns:1fr}.profit{font-size:32px}}
-  
+<meta name="theme-color" content="#101B35">
+<meta name="description" content="Calculate daily earnings, expenses and monthly profit.">
+<link rel="manifest" href="./manifest.json">
+<title>Daily Profit | Smart Calculator</title>
 
-/* ===== PREMIUM DAILY PROFIT THEME ===== */
+<style>
 :root {
   --navy: #101B35;
+  --navy2: #1D3765;
   --blue: #3678FF;
-  --blue-hover: #245FE0;
+  --blue-light: #EDF3FF;
   --teal: #138A6A;
-  --teal-bg: #E2F7EF;
-  --page-bg: #F1F5FB;
-  --card-bg: #FFFFFF;
-  --text-main: #172033;
-  --text-muted: #53627A;
+  --mint: #54D6B0;
+  --page: #F1F5FB;
+  --white: #FFFFFF;
+  --text: #172033;
+  --muted: #53627A;
   --border: #D5DFED;
+  --red: #C43D50;
 }
 
-html {
-  background: var(--page-bg);
-}
+* { box-sizing: border-box; }
 
 body {
-  background: var(--page-bg) !important;
-  color: var(--text-main) !important;
-  font-family: system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 20px 14px 32px;
+  background: var(--page);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Arial, sans-serif;
   line-height: 1.5;
-  overflow-wrap: anywhere;
 }
 
-/* App header and branding */
-header,
-.app-header,
-.brand-header {
-  background: linear-gradient(135deg, #101B35, #1D3765) !important;
-  color: #FFFFFF !important;
-  padding: 20px;
-  border-radius: 18px;
-}
-
-header h1,
-.app-header h1,
-.brand-header h1,
-.logo,
-.app-title {
-  color: #FFFFFF !important;
-  font-weight: 800;
-  letter-spacing: -0.4px;
-}
-
-/* Main cards */
-.card,
-.stat-card,
-.result,
-.results,
-.panel,
-section {
-  color: var(--text-main);
-}
-
-.card,
-.stat-card,
-.result,
-.results,
-.panel {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 5px 18px rgba(16, 27, 53, 0.06);
-  padding: 16px;
-}
-
-/* Headings and monthly overview */
-h1, h2, h3, h4 {
-  color: var(--text-main);
-  font-weight: 750;
-  line-height: 1.3;
-  overflow-wrap: anywhere;
-}
-
-p, label, .description, .subtitle {
-  color: var(--text-muted);
-}
-
-.monthly-overview,
-.monthly-overview *,
-.monthly-overview h2,
-.monthly-overview h3 {
-  color: var(--text-main) !important;
-}
-
-/* Inputs */
-input,
-select,
-textarea {
+main {
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  background: #FFFFFF !important;
-  color: var(--text-main) !important;
-  border: 1px solid #B8C7DC !important;
-  border-radius: 10px;
-  padding: 12px;
-  font: inherit;
+  max-width: 680px;
+  margin: auto;
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: #65738A !important;
-  opacity: 1;
+/* BRAND HEADER */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border-radius: 20px;
+  color: white;
+  background: linear-gradient(135deg, var(--navy), var(--navy2));
+  box-shadow: 0 8px 22px rgba(16,27,53,.15);
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-  outline: 2px solid #3678FF;
-  outline-offset: 1px;
-  border-color: #3678FF !important;
-}
-
-/* Buttons */
-button {
-  background: var(--blue);
+.logo {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #3678FF, #65A0FF);
   color: #FFFFFF;
-  border: none;
-  border-radius: 10px;
-  padding: 12px 16px;
+  font-size: 30px;
+  font-weight: 850;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+.brand h1 {
+  color: #FFFFFF;
+  font-size: clamp(21px, 5vw, 28px);
+  font-weight: 850;
+  letter-spacing: -.7px;
+  margin: 0;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.brand p {
+  margin: 5px 0 0;
+  color: #D1DDF2;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .8px;
+}
+
+.brand-icon {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--mint);
+  font-size: 28px;
+}
+
+/* DAILY PROFIT HERO */
+.hero {
+  margin-top: 18px;
+  padding: 23px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #142748, #101B35);
+  color: #FFFFFF;
+  box-shadow: 0 8px 20px rgba(16,27,53,.12);
+}
+
+.eyebrow {
+  color: #C6D5EF;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 1.2px;
+}
+
+.profit {
+  margin: 8px 0;
+  color: var(--mint);
+  font-size: clamp(32px, 8vw, 44px);
+  font-weight: 850;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+#status {
+  color: #D1DDF2;
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+/* GENERAL CARDS */
+.card {
+  margin: 17px 0;
+  padding: 20px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 5px 18px rgba(16,27,53,.045);
+  min-width: 0;
+}
+
+h2 {
+  margin: 0 0 18px;
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+  overflow-wrap: anywhere;
+}
+
+.section-subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  margin: -12px 0 18px;
+}
+
+/* FORM */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 13px;
+}
+
+label {
+  display: block;
+  margin-bottom: 7px;
+  color: #263651;
+  font-size: 13px;
   font-weight: 700;
-  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 13px 11px;
+  border: 1px solid #B8C7DC;
+  border-radius: 11px;
+  background: #F8FAFE;
+  color: #172033;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 650;
+  outline: none;
+}
+
+input:focus {
+  background: #FFFFFF;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(54,120,255,.13);
+}
+
+input::placeholder { color: #65738A; }
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  min-width: 0;
+  padding: 13px 15px;
+  border: 0;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 750;
   cursor: pointer;
 }
 
-button:hover {
-  background: var(--blue-hover);
+#calculate {
+  flex: 1;
+  background: var(--blue);
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(54,120,255,.18);
 }
 
-/* Profit highlights */
-.profit,
-.net-profit,
-.positive {
-  color: var(--teal) !important;
+#calculate:active { background: #245FE0; }
+
+#reset {
+  background: #E8EDF5;
+  color: #263651;
+}
+
+.error {
+  color: #B42336;
+  font-size: 13px;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+/* MONTHLY OVERVIEW */
+.overview {
+  background: linear-gradient(180deg, #FFFFFF, #FAFCFF);
+}
+
+.result {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #E3EAF4;
+}
+
+.result:last-child { border-bottom: 0; }
+
+.result span {
+  flex: 1;
+  min-width: 0;
+  color: #43516A;
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.result strong {
+  max-width: 55%;
+  color: #172033;
+  text-align: right;
+  font-size: 14px;
   font-weight: 800;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
-</style>
-<link rel="manifest" href="./manifest.json">
-  <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js");
-  });
+.result.highlight {
+  margin: 5px -10px;
+  padding: 14px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: #E2F7EF;
 }
-  </script>
+
+.result.highlight span,
+.result.highlight strong {
+  color: #116149;
+}
+
+.result.blue-highlight {
+  margin: 5px -10px;
+  padding: 14px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: #EDF3FF;
+}
+
+.result.blue-highlight span,
+.result.blue-highlight strong {
+  color: #2451A4;
+}
+
+.hint {
+  margin: 18px 4px;
+  color: #53627A;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (max-width: 400px) {
+  body { padding: 12px 10px 24px; }
+  .brand { padding: 15px; gap: 10px; }
+  .logo { width: 44px; height: 44px; font-size: 26px; }
+  .brand p { font-size: 10px; letter-spacing: .4px; }
+  .brand-icon { font-size: 22px; }
+  .hero { padding: 19px; }
+  .card { padding: 15px; }
+  .grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  h2 { font-size: 18px; }
+  .result { gap: 8px; }
+  .result span, .result strong { font-size: 13px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  button { transition: background .15s ease; }
+}
+</style>
+</head>
+
 <body>
 <main>
-<h1>₹ Daily Profit Calculator</h1>
-<p>Apni daily earning aur expenses calculate karo.</p>
 
-<section class="card">
-<div>DAILY NET PROFIT</div>
-<div class="profit" id="dailyProfit">₹575</div>
-<p id="status">All expenses deducted.</p>
+<header class="brand">
+  <div class="logo" aria-hidden="true">₹</div>
+  <div>
+    <h1>Daily Profit</h1>
+    <p>CALCULATE SMARTER. EARN BETTER.</p>
+  </div>
+  <div class="brand-icon" aria-hidden="true">↗</div>
+</header>
+
+<section class="hero" aria-label="Daily profit summary">
+  <div class="eyebrow">DAILY NET PROFIT</div>
+  <div class="profit" id="dailyProfit">₹575</div>
+  <p id="status">All expenses deducted.</p>
 </section>
 
 <section class="card">
-<h2>Your daily expenses</h2>
-<form id="calculator" novalidate>
-<div class="grid">
-<div>
-<label for="revenue">Daily revenue (₹)</label>
-<input id="revenue" type="number" min="0" step="any" value="1000">
-</div>
-<div>
-<label for="fuel">Daily fuel (₹)</label>
-<input id="fuel" type="number" min="0" step="any" value="150">
-</div>
-<div>
-<label for="food">Daily food (₹)</label>
-<input id="food" type="number" min="0" step="any" value="100">
-</div>
-<div>
-<label for="maintenance">Daily maintenance (₹)</label>
-<input id="maintenance" type="number" min="0" step="any" value="50">
-</div>
-<div>
-<label for="emi">Monthly EMI / rent (₹)</label>
-<input id="emi" type="number" min="0" step="any" value="3000">
-</div>
-<div>
-<label for="days">Working days per month</label>
-<input id="days" type="number" min="1" max="31" step="1" value="24">
-</div>
-<div>
-<label for="target">Monthly profit target (₹)</label>
-<input id="target" type="number" min="0" step="any" value="30000">
-</div>
-</div>
+  <h2>Daily Expenses & Income</h2>
+  <p class="section-subtitle">Enter your daily earnings and costs.</p>
 
-<div id="error" class="error" role="alert"></div>
-<div class="buttons">
-<button type="button" id="calculate">Calculate</button>
-<button type="reset" id="reset">Reset</button>
-</div>
-</form>
+  <form id="calculator" novalidate>
+    <div class="grid">
+      <div>
+        <label for="revenue">Daily revenue (₹)</label>
+        <input id="revenue" type="number" min="0" step="any" value="1000">
+      </div>
+      <div>
+        <label for="fuel">Daily fuel (₹)</label>
+        <input id="fuel" type="number" min="0" step="any" value="150">
+      </div>
+      <div>
+        <label for="food">Daily food (₹)</label>
+        <input id="food" type="number" min="0" step="any" value="100">
+      </div>
+      <div>
+        <label for="maintenance">Daily maintenance (₹)</label>
+        <input id="maintenance" type="number" min="0" step="any" value="50">
+      </div>
+      <div>
+        <label for="emi">Monthly EMI / rent (₹)</label>
+        <input id="emi" type="number" min="0" step="any" value="3000">
+      </div>
+      <div>
+        <label for="days">Working days per month</label>
+        <input id="days" type="number" min="1" max="31" step="1" value="24">
+      </div>
+      <div>
+        <label for="target">Monthly profit target (₹)</label>
+        <input id="target" type="number" min="0" step="any" value="30000">
+      </div>
+    </div>
+
+    <div id="error" class="error" role="alert" aria-live="polite"></div>
+    <div class="buttons">
+      <button type="button" id="calculate">Calculate Profit</button>
+      <button type="reset" id="reset">Reset</button>
+    </div>
+  </form>
 </section>
 
-<section class="card">
-<h2>Monthly overview</h2>
-<div class="result"><span>Monthly revenue</span><strong id="monthlyRevenue">₹24,000</strong></div>
-<div class="result"><span>Monthly expenses</span><strong id="monthlyExpenses">₹10,200</strong></div>
-<div class="result"><span>Monthly net profit</span><strong id="monthlyProfit">₹13,800</strong></div>
-<div class="result"><span>Break-even daily revenue</span><strong id="breakEven">₹425</strong></div>
-<div class="result"><span>Daily operating expenses</span><strong id="operating">₹300</strong></div>
-<div class="result"><span>Monthly target remaining</span><strong id="remaining">₹16,200</strong></div>
-<div class="result"><span>Target progress</span><strong id="progress">46%</strong></div>
+<section class="card overview">
+  <h2>Monthly Overview</h2>
+  <p class="section-subtitle">Your income, expenses and target progress.</p>
+
+  <div class="result blue-highlight">
+    <span>Monthly revenue</span>
+    <strong id="monthlyRevenue">₹24,000</strong>
+  </div>
+  <div class="result">
+    <span>Monthly expenses</span>
+    <strong id="monthlyExpenses">₹10,200</strong>
+  </div>
+  <div class="result highlight">
+    <span>Monthly net profit</span>
+    <strong id="monthlyProfit">₹13,800</strong>
+  </div>
+  <div class="result">
+    <span>Break-even daily revenue</span>
+    <strong id="breakEven">₹425</strong>
+  </div>
+  <div class="result">
+    <span>Daily operating expenses</span>
+    <strong id="operating">₹300</strong>
+  </div>
+  <div class="result">
+    <span>Monthly target remaining</span>
+    <strong id="remaining">₹16,200</strong>
+  </div>
+  <div class="result">
+    <span>Target progress</span>
+    <strong id="progress">46%</strong>
+  </div>
 </section>
 
-<p class="hint">Note: Results are estimates. Actual income and expenses may vary.</p>
+<p class="hint">
+  Note: Results are estimates. Actual income and expenses may vary.
+</p>
 </main>
 
 <script>
@@ -324,11 +489,16 @@ if ("serviceWorker" in navigator) {
       : Math.max(0, Math.min(100, monthlyProfit / v.target * 100));
 
     $("dailyProfit").textContent = money(dailyProfit);
-    $("dailyProfit").style.color = dailyProfit >= 0 ? "#55e0a0" : "#ff8c98";
+    $("dailyProfit").style.color =
+      dailyProfit >= 0 ? "#54D6B0" : "#FF8C98";
+
     $("monthlyRevenue").textContent = money(monthlyRevenue);
     $("monthlyExpenses").textContent = money(monthlyExpenses);
     $("monthlyProfit").textContent = money(monthlyProfit);
-    $("monthlyProfit").style.color = monthlyProfit >= 0 ? "#55e0a0" : "#ff8c98";
+
+    $("monthlyProfit").style.color =
+      monthlyProfit >= 0 ? "#116149" : "#B42336";
+
     $("breakEven").textContent = money(breakEven);
     $("operating").textContent = money(operating);
     $("remaining").textContent = money(remaining);
@@ -337,13 +507,8 @@ if ("serviceWorker" in navigator) {
     $("status").textContent = monthlyProfit >= v.target
       ? "Monthly profit target reached!"
       : "After daily costs and monthly EMI/rent allocation.";
-
-    console.log("Calculator updated", {
-      dailyProfit, monthlyRevenue, monthlyExpenses, monthlyProfit, breakEven
-    });
   }
 
-  // Every change recalculates immediately.
   ids.forEach(id => {
     $(id).addEventListener("input", calculate);
     $(id).addEventListener("change", calculate);
@@ -357,13 +522,13 @@ if ("serviceWorker" in navigator) {
 
   calculate();
 })();
-</script>
-  <script>
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js");
+    navigator.serviceWorker.register("./service-worker.js")
+      .catch(error => console.error("Service worker registration failed:", error));
   });
 }
-  </script>
+</script>
 </body>
 </html>

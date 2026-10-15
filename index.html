@@ -8,6 +8,13 @@
 <title>Daily Profit Calculator</title>
 <style>
 *{box-sizing:border-box}
+  <script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js");
+  });
+}
+</script>
 body{margin:0;padding:20px;background:#101827;color:#f4f7fb;font-family:Arial,sans-serif}
 main{max-width:650px;margin:auto}
 h1{font-size:26px}
@@ -29,6 +36,13 @@ button{padding:14px;border:0;border-radius:10px;font-size:16px;font-weight:bold;
 @media(max-width:380px){.grid{grid-template-columns:1fr}.profit{font-size:32px}}
 </style>
 <link rel="manifest" href="./manifest.json">
+  <script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js");
+  });
+}
+  </script>
 <body>
 <main>
 <h1>₹ Daily Profit Calculator</h1>
@@ -202,5 +216,12 @@ button{padding:14px;border:0;border-radius:10px;font-size:16px;font-weight:bold;
   calculate();
 })();
 </script>
+  <script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js");
+  });
+}
+  </script>
 </body>
 </html>

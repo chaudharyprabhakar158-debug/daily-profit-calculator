@@ -35,76 +35,198 @@ button{padding:14px;border:0;border-radius:10px;font-size:16px;font-weight:bold;
 .error{color:#ff9ca5;font-size:13px;margin-top:8px}
 @media(max-width:380px){.grid{grid-template-columns:1fr}.profit{font-size:32px}}
   
-/* Light theme - clear and readable */
+
+/* ===== PREMIUM DAILY PROFIT THEME ===== */
+:root {
+  --navy: #101B35;
+  --blue: #3678FF;
+  --blue-hover: #245FE0;
+  --teal: #138A6A;
+  --teal-bg: #E2F7EF;
+  --page-bg: #F1F5FB;
+  --card-bg: #FFFFFF;
+  --text-main: #172033;
+  --text-muted: #53627A;
+  --border: #D5DFED;
+}
+
+html {
+  background: var(--page-bg);
+}
+
 body {
-  background: #f4f7fb !important;
-  color: #172033 !important;
+  background: var(--page-bg) !important;
+  color: var(--text-main) !important;
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
-h1, h2, h3, p, label, span, small {
-  color: #172033;
+/* App header and branding */
+header,
+.app-header,
+.brand-header {
+  background: linear-gradient(135deg, #101B35, #1D3765) !important;
+  color: #FFFFFF !important;
+  padding: 20px;
+  border-radius: 18px;
 }
 
-input, select, textarea {
-  background: #ffffff !important;
-  color: #172033 !important;
-  border: 1px solid #b8c2d1 !important;
+header h1,
+.app-header h1,
+.brand-header h1,
+.logo,
+.app-title {
+  color: #FFFFFF !important;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+}
+
+/* Main cards */
+.card,
+.stat-card,
+.result,
+.results,
+.panel,
+section {
+  color: var(--text-main);
+}
+
+.card,
+.stat-card,
+.result,
+.results,
+.panel {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 5px 18px rgba(16, 27, 53, 0.06);
+  padding: 16px;
+}
+
+/* Headings and monthly overview */
+h1, h2, h3, h4 {
+  color: var(--text-main);
+  font-weight: 750;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+p, label, .description, .subtitle {
+  color: var(--text-muted);
+}
+
+.monthly-overview,
+.monthly-overview *,
+.monthly-overview h2,
+.monthly-overview h3 {
+  color: var(--text-main) !important;
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: #FFFFFF !important;
+  color: var(--text-main) !important;
+  border: 1px solid #B8C7DC !important;
+  border-radius: 10px;
+  padding: 12px;
+  font: inherit;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: #687386 !important;
+  color: #65738A !important;
   opacity: 1;
 }
 
-.card, .container, .result, .stat-card {
-  background: #ffffff !important;
-  color: #172033 !important;
-  border-color: #dce3ed !important;
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #3678FF;
+  outline-offset: 1px;
+  border-color: #3678FF !important;
 }
 
-  
-/* Strong readable light theme */
-html, body {
-  background: #f4f7fb !important;
-  color: #172033 !important;
-}
-
-body * {
-  color: #172033;
-}
-
-body, main, section, header, footer,
-.container, .card, .panel, .result,
-.results, .stat-card, .input-group {
-  background-color: #f4f7fb;
-}
-
-.card, .panel, .result, .results, .stat-card {
-  background-color: #ffffff !important;
-  border: 1px solid #d5deea !important;
-}
-
-input, select, textarea {
-  background-color: #ffffff !important;
-  color: #172033 !important;
-  border: 1px solid #8795a8 !important;
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: #596579 !important;
-  opacity: 1 !important;
-}
-
+/* Buttons */
 button {
-  background-color: #1769ff !important;
-  color: #ffffff !important;
+  background: var(--blue);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-weight: 700;
+  max-width: 100%;
+  cursor: pointer;
 }
 
-button * {
-  color: #ffffff !important;
+button:hover {
+  background: var(--blue-hover);
 }
+
+/* Profit highlights */
+.profit,
+.net-profit,
+.positive {
+  color: var(--teal) !important;
+  font-weight: 800;
+}
+
+.revenue,
+.income {
+  color: var(--blue) !important;
+  font-weight: 800;
+}
+
+/* Prevent content from spilling outside cards */
+* {
+  box-sizing: border-box;
+}
+
+img,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  color: var(--text-main);
+  padding: 8px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .card,
+  .stat-card,
+  .result,
+  .results,
+  .panel {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  header,
+  .app-header,
+  .brand-header {
+    padding: 16px;
+  }
+
+  button {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
+
   
 </style>
 <link rel="manifest" href="./manifest.json">

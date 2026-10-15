@@ -171,10 +171,10 @@ input {
   display: block;
   width: 100%;
   min-width: 0;
-  padding: 13px 11px;
-  border: 1px solid #B8C7DC;
-  border-radius: 11px;
-  background: #F8FAFE;
+  padding: 14px 13px;
+  border: 1px solid #D5DFED;
+  border-radius: 12px;
+  background: #F7F9FD;
   color: #172033;
   font: inherit;
   font-size: 16px;
@@ -185,7 +185,8 @@ input {
 input:focus {
   background: #FFFFFF;
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(54,120,255,.13);
+  box-shadow: inset 0 1px 2px rgba(16,27,53,.025);
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
 }
 
 input::placeholder { color: #65738A; }

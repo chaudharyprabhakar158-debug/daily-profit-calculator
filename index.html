@@ -196,16 +196,40 @@ input::placeholder { color: #65738A; }
   margin-top: 20px;
 }
 
+
 button {
   min-width: 0;
-  padding: 13px 15px;
+  padding: 14px 16px;
   border: 0;
-  border-radius: 11px;
+  border-radius: 12px;
   font: inherit;
   font-size: 15px;
   font-weight: 750;
   cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
 }
+
+button:active {
+  transform: scale(0.98);
+}
+
+#calculate {
+  flex: 1;
+  background: linear-gradient(135deg, #3678FF, #245FE0);
+  color: #FFFFFF;
+  box-shadow: 0 5px 14px rgba(54,120,255,.24);
+}
+
+#calculate:active {
+  background: #245FE0;
+}
+
+#reset {
+  background: #E8EDF5;
+  color: #263651;
+  border: 1px solid #D5DFED;
+}
+
 
 #calculate {
   flex: 1;

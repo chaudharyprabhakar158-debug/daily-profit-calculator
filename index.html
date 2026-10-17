@@ -779,6 +779,187 @@ button:active {
     setTimeout(calculate, 0);
   });
 
+      // EXPENSE HISTORY
+      const expenseDateInput = document.getElementById("expenseDate");
+      const expenseCategoryInput = document.getElementById("expenseCategory");
+      const expenseAmountInput = document.getElementById("expenseAmount");
+      const expenseNoteInput = document.getElementById("expenseNote");
+      const addExpenseButton = document.getElementById("addExpenseBtn");
+      const expenseHistoryTotal = document.getElementById("expenseHistoryTotal");
+      const expenseHistoryList = document.getElementById("expenseHistoryList");
+
+      const expenseStorageKey = "dailyProfitCalculatorExpensesV1";
+      let expenseRecords = [];
+
+      const currentDate = new Date();
+      const localToday = new Date(
+        currentDate.getTime() - currentDate.getTimezoneOffset() * 60000
+      ).toISOString().slice(0, 10);
+
+      expenseDateInput.value = localToday;
+
+      try {
+        const storedExpenses = localStorage.getItem(expenseStorageKey);
+        if (storedExpenses) {
+          const parsedExpenses = JSON.parse(storedExpenses);
+          if (Array.isArray(parsedExpenses)) {
+            expenseRecords = parsedExpenses.filter(item =>
+              item &&
+              typeof item.id === "string" &&
+              typeof item.date === "string" &&
+              typeof item.category === "string" &&
+              Number.isFinite(Number(item.amount)) &&
+              Number(item.amount) > 0
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Could not load expense history:", error);
+      }
+
+      function formatExpenseMoney(amount) {
+        return "₹" + Number(amount).toLocaleString("en-IN", {
+          maximumFractionDigits: 2
+        });
+      }
+
+      function saveExpenseRecords() {
+        try {
+          localStorage.setItem(
+            expenseStorageKey,
+            JSON.stringify(expenseRecords)
+          );
+          return true;
+        } catch (error) {
+          alert("Expenses could not be saved. Please check browser storage.");
+          console.error("Could not save expense history:", error);
+          return false;
+        }
+      }
+
+      function renderExpenseHistory() {
+        const total = expenseRecords.reduce(
+          (sum, item) => sum + Number(item.amount),
+          0
+        );
+
+        expenseHistoryTotal.textContent = formatExpenseMoney(total);
+        expenseHistoryList.textContent = "";
+
+        if (expenseRecords.length === 0) {
+          const emptyMessage = document.createElement("p");
+          emptyMessage.textContent = "No expenses recorded yet.";
+          expenseHistoryList.appendChild(emptyMessage);
+          return;
+        }
+
+        const sortedExpenses = [...expenseRecords].sort((a, b) =>
+          b.date.localeCompare(a.date)
+        );
+
+        sortedExpenses.forEach(item => {
+          const entry = document.createElement("div");
+          entry.className = "expense-entry";
+
+          const heading = document.createElement("div");
+          const category = document.createElement("strong");
+          category.textContent = item.category + " — " +
+            formatExpenseMoney(item.amount);
+          heading.appendChild(category);
+
+          const dateLine = document.createElement("p");
+          dateLine.style.margin = "8px 0 4px";
+          dateLine.className = "expense-date";
+          dateLine.textContent = new Date(
+            item.date + "T00:00:00"
+          ).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+          });
+
+          entry.appendChild(heading);
+          entry.appendChild(dateLine);
+
+          if (item.note) {
+            const note = document.createElement("p");
+            note.style.margin = "4px 0 10px";
+            note.textContent = item.note;
+            entry.appendChild(note);
+          }
+
+          const deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.textContent = "Delete";
+          deleteButton.style.cssText =
+            "margin-top:8px;padding:8px 12px;border:0;" +
+            "border-radius:8px;background:#FCE8E8;color:#A12626;" +
+            "font-weight:700;cursor:pointer;";
+
+          deleteButton.addEventListener("click", function () {
+            const confirmed = confirm("Delete this expense?");
+            if (!confirmed) return;
+
+            const previousRecords = expenseRecords;
+            expenseRecords = expenseRecords.filter(
+              record => record.id !== item.id
+            );
+
+            if (!saveExpenseRecords()) {
+              expenseRecords = previousRecords;
+              return;
+            }
+
+            renderExpenseHistory();
+          });
+
+          entry.appendChild(deleteButton);
+          expenseHistoryList.appendChild(entry);
+        });
+      }
+
+      addExpenseButton.addEventListener("click", function () {
+        const date = expenseDateInput.value;
+        const category = expenseCategoryInput.value;
+        const amount = Number(expenseAmountInput.value);
+        const note = expenseNoteInput.value.trim();
+
+        if (!date) {
+          alert("Please select an expense date.");
+          expenseDateInput.focus();
+          return;
+        }
+
+        if (!Number.isFinite(amount) || amount <= 0) {
+          alert("Please enter an amount greater than ₹0.");
+          expenseAmountInput.focus();
+          return;
+        }
+
+        const newExpense = {
+          id: Date.now().toString() + Math.random().toString(36).slice(2),
+          date: date,
+          category: category,
+          amount: amount,
+          note: note
+        };
+
+        expenseRecords.unshift(newExpense);
+
+        if (!saveExpenseRecords()) {
+          expenseRecords = expenseRecords.filter(
+            item => item.id !== newExpense.id
+          );
+          return;
+        }
+
+        expenseAmountInput.value = "";
+        expenseNoteInput.value = "";
+        renderExpenseHistory();
+      });
+
+      renderExpenseHistory();
+  
   calculate();
 })();
 

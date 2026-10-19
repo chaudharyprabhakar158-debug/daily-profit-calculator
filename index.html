@@ -1044,6 +1044,82 @@ button:active {
 
       renderExpenseHistory();
   
+      // MONTHLY REPORT
+      const reportMonthInput = document.getElementById("reportMonth");
+      const reportTotal = document.getElementById("reportTotal");
+      const categoryBreakdown = document.getElementById("categoryBreakdown");
+
+      const reportCategories = [
+        "Fuel",
+        "Food",
+        "Maintenance",
+        "EMI",
+        "Other"
+      ];
+
+      function renderMonthlyReport() {
+        const selectedMonth = reportMonthInput.value;
+
+        const monthExpenses = expenseRecords.filter(item =>
+          item.date.slice(0, 7) === selectedMonth
+        );
+
+        const total = monthExpenses.reduce(
+          (sum, item) => sum + Number(item.amount),
+          0
+        );
+
+        reportTotal.textContent = formatExpenseMoney(total);
+        categoryBreakdown.textContent = "";
+
+        if (monthExpenses.length === 0) {
+          const message = document.createElement("p");
+          message.textContent = "No expenses recorded for this month.";
+          categoryBreakdown.appendChild(message);
+          return;
+        }
+
+        reportCategories.forEach(category => {
+          const categoryTotal = monthExpenses
+            .filter(item => item.category === category)
+            .reduce((sum, item) => sum + Number(item.amount), 0);
+
+          const row = document.createElement("div");
+          row.className = "category-row";
+
+          const label = document.createElement("span");
+          label.textContent = category === "Fuel"
+            ? "Fuel / Petrol"
+            : category === "Maintenance"
+              ? "Bike Maintenance"
+              : category;
+
+          const amount = document.createElement("strong");
+          amount.textContent = formatExpenseMoney(categoryTotal);
+
+          row.appendChild(label);
+          row.appendChild(amount);
+          categoryBreakdown.appendChild(row);
+        });
+      }
+
+      const reportToday = new Date();
+      reportMonthInput.value =
+        reportToday.getFullYear() + "-" +
+        String(reportToday.getMonth() + 1).padStart(2, "0");
+
+      reportMonthInput.addEventListener("change", renderMonthlyReport);
+
+      const originalRenderExpenseHistory = renderExpenseHistory;
+
+      // Refresh the report whenever the expense list is redrawn.
+      renderExpenseHistory = function () {
+        originalRenderExpenseHistory();
+        renderMonthlyReport();
+      };
+
+      renderMonthlyReport();
+  
   calculate();
 })();
 

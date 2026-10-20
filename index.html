@@ -755,6 +755,56 @@ button:active {
   </div>
 </section>
   
+<section class="card savings-tracker">
+  <h2>Monthly Savings Tracker</h2>
+  <p class="history-subtitle">
+    Set a savings goal and track your progress every month.
+  </p>
+
+  <label for="savingsMonth">Select Month</label>
+  <input type="month" id="savingsMonth">
+
+  <label for="savingsGoal">Monthly Savings Goal (₹)</label>
+  <input
+    type="number"
+    id="savingsGoal"
+    min="1"
+    step="1"
+    placeholder="e.g. 5000"
+  >
+
+  <label for="savedAmount">Amount Actually Saved (₹)</label>
+  <input
+    type="number"
+    id="savedAmount"
+    min="0"
+    step="1"
+    placeholder="e.g. 2000"
+  >
+
+  <button type="button" id="saveSavingsBtn">
+    Save Savings
+  </button>
+
+  <div class="expense-summary savings-summary">
+    <span>Your Savings Progress</span>
+    <strong id="savingsProgressText">0%</strong>
+  </div>
+
+  <div class="savings-progress-track">
+    <div id="savingsProgressBar" class="savings-progress-bar"></div>
+  </div>
+
+  <div class="savings-result">
+    <span>Remaining to Goal</span>
+    <strong id="savingsRemaining">₹0</strong>
+  </div>
+
+  <p id="savingsMessage" class="history-subtitle">
+    Enter your goal and actual savings to begin.
+  </p>
+</section>
+  
 <p class="hint">
   Note: Results are estimates. Actual income and expenses may vary.
 </p>

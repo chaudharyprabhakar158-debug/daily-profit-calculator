@@ -617,24 +617,26 @@ button:active {
 .savings-summary {
   margin-top: 20px;
 }
-
+  
 .savings-progress-track {
-  width: 100%;
-  height: 12px;
-  margin-top: 12px;
-  overflow: hidden;
-  border-radius: 20px;
-  background: #E6ECF5;
+  display: block !important;
+  width: 100% !important;
+  height: 18px !important;
+  margin: 14px 0 !important;
+  overflow: hidden !important;
+  border: 2px solid #2451A4 !important;
+  border-radius: 20px !important;
+  background-color: #E6ECF5 !important;
+  box-sizing: border-box !important;
 }
 
 .savings-progress-bar {
-  display: block;
+  display: block !important;
+  height: 100% !important;
+  min-height: 14px !important;
   width: 0%;
-  min-width: 0;
-  height: 12px;
-  border-radius: 20px;
-  background-color: #20A779;
-  transition: width 0.25s ease;
+  border-radius: 20px !important;
+  background-color: #20A779 !important;
 }
 
 .savings-result {

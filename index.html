@@ -1263,6 +1263,145 @@ button:active {
 
       renderMonthlyReport();
   
+      // MONTHLY SAVINGS TRACKER
+      const savingsMonthInput = document.getElementById("savingsMonth");
+      const savingsGoalInput = document.getElementById("savingsGoal");
+      const savedAmountInput = document.getElementById("savedAmount");
+      const saveSavingsButton = document.getElementById("saveSavingsBtn");
+      const savingsProgressText = document.getElementById("savingsProgressText");
+      const savingsProgressBar = document.getElementById("savingsProgressBar");
+      const savingsRemaining = document.getElementById("savingsRemaining");
+      const savingsMessage = document.getElementById("savingsMessage");
+
+      const savingsStorageKey = "dailyProfitCalculatorSavingsV1";
+      let savingsRecords = {};
+
+      const savingsToday = new Date();
+      const savingsCurrentMonth =
+        savingsToday.getFullYear() + "-" +
+        String(savingsToday.getMonth() + 1).padStart(2, "0");
+
+      savingsMonthInput.value = savingsCurrentMonth;
+
+      try {
+        const storedSavings = localStorage.getItem(savingsStorageKey);
+        if (storedSavings) {
+          const parsedSavings = JSON.parse(storedSavings);
+          if (
+            parsedSavings &&
+            typeof parsedSavings === "object" &&
+            !Array.isArray(parsedSavings)
+          ) {
+            savingsRecords = parsedSavings;
+          }
+        }
+      } catch (error) {
+        console.error("Could not load savings:", error);
+      }
+
+      function formatSavingsMoney(amount) {
+        return "₹" + Number(amount).toLocaleString("en-IN", {
+          maximumFractionDigits: 2
+        });
+      }
+
+      function renderSavingsTracker() {
+        const month = savingsMonthInput.value;
+        const record = savingsRecords[month];
+
+        savingsGoalInput.value = record ? record.goal : "";
+        savedAmountInput.value = record ? record.saved : "";
+
+        const goal = record ? Number(record.goal) : 0;
+        const saved = record ? Number(record.saved) : 0;
+
+        const percentage = goal > 0
+          ? Math.min((saved / goal) * 100, 100)
+          : 0;
+
+        savingsProgressText.textContent =
+          (goal > 0 ? Math.round((saved / goal) * 100) : 0) + "%";
+
+        savingsProgressBar.style.width = percentage + "%";
+        savingsRemaining.textContent =
+          formatSavingsMoney(Math.max(goal - saved, 0));
+
+        if (goal <= 0) {
+          savingsMessage.textContent =
+            "Enter your goal and actual savings to begin.";
+        } else if (saved >= goal) {
+          savingsMessage.textContent =
+            "Congratulations! You reached your savings goal.";
+        } else {
+          savingsMessage.textContent =
+            "You have saved " + formatSavingsMoney(saved) +
+            ". Keep going toward your goal!";
+        }
+      }
+
+      saveSavingsButton.addEventListener("click", function () {
+        const month = savingsMonthInput.value;
+        const goal = Number(savingsGoalInput.value);
+        const saved = Number(savedAmountInput.value);
+
+        if (!month) {
+          alert("Please select a month.");
+          savingsMonthInput.focus();
+          return;
+        }
+
+        if (
+          savingsGoalInput.value.trim() === "" ||
+          !Number.isFinite(goal) ||
+          goal <= 0
+        ) {
+          alert("Please enter a savings goal greater than ₹0.");
+          savingsGoalInput.focus();
+          return;
+        }
+
+        if (
+          savedAmountInput.value.trim() === "" ||
+          !Number.isFinite(saved) ||
+          saved < 0
+        ) {
+          alert("Please enter actual savings of ₹0 or more.");
+          savedAmountInput.focus();
+          return;
+        }
+
+        const previousRecord = savingsRecords[month];
+
+        savingsRecords[month] = {
+          goal: goal,
+          saved: saved
+        };
+
+        try {
+          localStorage.setItem(
+            savingsStorageKey,
+            JSON.stringify(savingsRecords)
+          );
+        } catch (error) {
+          if (previousRecord) {
+            savingsRecords[month] = previousRecord;
+          } else {
+            delete savingsRecords[month];
+          }
+
+          alert("Savings could not be saved. Please check browser storage.");
+          console.error("Could not save savings:", error);
+          return;
+        }
+
+        renderSavingsTracker();
+        alert("Savings details saved successfully!");
+      });
+
+      savingsMonthInput.addEventListener("change", renderSavingsTracker);
+
+      renderSavingsTracker();
+  
   calculate();
 })();
 

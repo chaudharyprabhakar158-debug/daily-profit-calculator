@@ -925,6 +925,40 @@ button:active {
   </p>
 </section>
   
+<section class="card daily-history">
+  <h2>Daily Profit History</h2>
+  <p class="history-subtitle">
+    Save your daily calculator results and review your past performance.
+  </p>
+
+  <label for="profitRecordDate">Record Date</label>
+  <input type="date" id="profitRecordDate">
+
+  <div class="expense-summary">
+    <span>Daily Revenue</span>
+    <strong id="recordRevenue">₹0</strong>
+  </div>
+
+  <div class="category-row">
+    <span>Daily Expenses</span>
+    <strong id="recordExpenses">₹0</strong>
+  </div>
+
+  <div class="expense-summary">
+    <span>Daily Net Profit</span>
+    <strong id="recordProfit">₹0</strong>
+  </div>
+
+  <button type="button" id="saveProfitRecordBtn">
+    Save Today's Record
+  </button>
+
+  <h3 class="report-heading">Saved Daily Records</h3>
+  <div id="dailyProfitRecords">
+    <p>No daily records saved yet.</p>
+  </div>
+</section>
+  
 <p class="hint">
   Note: Results are estimates. Actual income and expenses may vary.
 </p>

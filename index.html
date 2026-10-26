@@ -1533,6 +1533,147 @@ button:active {
 
       renderSavingsTracker();
   
+  // DAILY PROFIT HISTORY
+  const dailyRecordsKey = "dailyProfitCalculatorDailyRecordsV1";
+
+  const profitDateInput = $("profitRecordDate");
+  const saveProfitBtn = $("saveProfitRecordBtn");
+  const recordsContainer = $("dailyProfitRecords");
+
+  function getDailyValues() {
+    const revenue = Number($("revenue").value) || 0;
+    const fuel = Number($("fuel").value) || 0;
+    const food = Number($("food").value) || 0;
+    const maintenance = Number($("maintenance").value) || 0;
+    const emi = Number($("emi").value) || 0;
+    const days = Math.max(1, Number($("days").value) || 1);
+
+    const expenses = fuel + food + maintenance + emi / days;
+    const profit = revenue - expenses;
+
+    return { revenue, expenses, profit };
+  }
+
+  function formatRecordMoney(amount) {
+    return "₹" + amount.toLocaleString("en-IN", {
+      maximumFractionDigits: 2
+    });
+  }
+
+  function updateDailyPreview() {
+    const values = getDailyValues();
+
+    $("recordRevenue").textContent =
+      formatRecordMoney(values.revenue);
+
+    $("recordExpenses").textContent =
+      formatRecordMoney(values.expenses);
+
+    $("recordProfit").textContent =
+      formatRecordMoney(values.profit);
+  }
+
+  function renderDailyRecords() {
+    const records = JSON.parse(
+      localStorage.getItem(dailyRecordsKey) || "[]"
+    );
+
+    recordsContainer.replaceChildren();
+
+    if (records.length === 0) {
+      const message = document.createElement("p");
+      message.textContent = "No daily records saved yet.";
+      recordsContainer.appendChild(message);
+      return;
+    }
+
+    records.sort((a, b) => b.date.localeCompare(a.date));
+
+    records.forEach(function (record) {
+      const entry = document.createElement("div");
+      entry.className = "daily-record-entry";
+
+      const date = document.createElement("p");
+      const revenue = document.createElement("p");
+      const expenses = document.createElement("p");
+      const profit = document.createElement("p");
+      const deleteBtn = document.createElement("button");
+
+      date.textContent = "Date: " + record.date;
+      revenue.textContent = "Revenue: " + formatRecordMoney(record.revenue);
+      expenses.textContent = "Expenses: " + formatRecordMoney(record.expenses);
+      profit.textContent = "Net Profit: " + formatRecordMoney(record.profit);
+
+      deleteBtn.type = "button";
+      deleteBtn.textContent = "Delete Record";
+      deleteBtn.style.cssText =
+        "padding:8px 12px;border:0;border-radius:8px;background:#FCE8EB;color:#A52235;font-weight:700;";
+
+      deleteBtn.addEventListener("click", function () {
+        const updated = JSON.parse(
+          localStorage.getItem(dailyRecordsKey) || "[]"
+        ).filter(function (item) {
+          return item.date !== record.date;
+        });
+
+        localStorage.setItem(dailyRecordsKey, JSON.stringify(updated));
+        renderDailyRecords();
+      });
+
+      entry.append(date, revenue, expenses, profit, deleteBtn);
+      recordsContainer.appendChild(entry);
+    });
+  }
+
+  function setTodayDate() {
+    const now = new Date();
+    const localDate = new Date(
+      now.getTime() - now.getTimezoneOffset() * 60000
+    ).toISOString().slice(0, 10);
+
+    profitDateInput.value = localDate;
+  }
+
+  saveProfitBtn.addEventListener("click", function () {
+    if (!profitDateInput.value) {
+      alert("Please select a date first.");
+      return;
+    }
+
+    const values = getDailyValues();
+    const records = JSON.parse(
+      localStorage.getItem(dailyRecordsKey) || "[]"
+    );
+
+    const record = {
+      date: profitDateInput.value,
+      revenue: values.revenue,
+      expenses: values.expenses,
+      profit: values.profit
+    };
+
+    const existingIndex = records.findIndex(function (item) {
+      return item.date === record.date;
+    });
+
+    if (existingIndex >= 0) {
+      records[existingIndex] = record;
+    } else {
+      records.push(record);
+    }
+
+    localStorage.setItem(dailyRecordsKey, JSON.stringify(records));
+    renderDailyRecords();
+    alert("Daily profit record saved!");
+  });
+
+  $("calculator").addEventListener("input", updateDailyPreview);
+  $("calculator").addEventListener("change", updateDailyPreview);
+
+  setTodayDate();
+  updateDailyPreview();
+  renderDailyRecords();
+  
   calculate();
 })();
 

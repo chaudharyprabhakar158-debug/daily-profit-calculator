@@ -1344,6 +1344,53 @@ button:active {
         );
 
         reportTotal.textContent = formatExpenseMoney(total);
+        
+        // Daily Profit History for selected month
+        const dailyRecords = JSON.parse(
+          localStorage.getItem("dailyProfitCalculatorDailyRecordsV1") || "[]"
+        );
+
+        const monthDailyRecords = dailyRecords.filter(
+          item => item.date.slice(0, 7) === selectedMonth
+        );
+
+        const dailyRevenueTotal = monthDailyRecords.reduce(
+          (sum, item) => sum + Number(item.revenue || 0), 0
+        );
+
+        const dailyExpenseTotal = monthDailyRecords.reduce(
+          (sum, item) => sum + Number(item.expenses || 0), 0
+        );
+
+        const dailyProfitTotal = monthDailyRecords.reduce(
+          (sum, item) => sum + Number(item.profit || 0), 0
+        );
+
+        const dailySummary = document.createElement("div");
+        dailySummary.className = "daily-record-entry";
+
+        const summaryTitle = document.createElement("p");
+        summaryTitle.textContent = "Daily Profit History Summary";
+        summaryTitle.style.fontWeight = "800";
+
+        const revenueRow = document.createElement("p");
+        revenueRow.textContent =
+          "Recorded Revenue: " + formatExpenseMoney(dailyRevenueTotal);
+
+        const expensesRow = document.createElement("p");
+        expensesRow.textContent =
+          "Recorded Daily Expenses: " + formatExpenseMoney(dailyExpenseTotal);
+
+        const profitRow = document.createElement("p");
+        profitRow.textContent =
+          "Recorded Net Profit: " + formatExpenseMoney(dailyProfitTotal);
+
+        dailySummary.append(
+          summaryTitle, revenueRow, expensesRow, profitRow
+        );
+
+        categoryBreakdown.appendChild(dailySummary);
+        
         categoryBreakdown.textContent = "";
 
         if (monthExpenses.length === 0) {
